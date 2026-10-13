@@ -794,8 +794,7 @@ function drawGame(){
     c.strokeStyle='#8a5a3a';c.lineWidth=T*0.08;c.lineCap='round';c.beginPath();c.moveTo(gx-T*0.32,gy+T*0.4);c.lineTo(gx-T*0.32,gy-T*0.25);c.quadraticCurveTo(gx,gy-T*0.6,gx+T*0.32,gy-T*0.25);c.lineTo(gx+T*0.32,gy+T*0.4);c.stroke();
     rrect(c,gx-T*0.36,gy-T*0.2,T*0.72,T*0.26,T*0.06);c.fillStyle='#fbf4e4';c.fill();c.fillStyle='#4a3a2c';c.font=Math.round(T*0.18)+'px Jua, sans-serif';c.textAlign='center';c.textBaseline='middle';c.fillText('다음 길',gx,gy-T*0.07);
     for(let k=0;k<3;k++){const a=tt*1.5+k*2.1;drawStar(c,gx+Math.cos(a)*T*0.42,gy+Math.sin(a)*T*0.3,T*0.06,'#ffd23f');}}
-  // stars
-  M.stars.forEach(s=>{if(s.got)return;const y=s.y*T+T/2+Math.sin(tt*3+s.ph)*T*0.06;c.globalAlpha=0.3;ell(c,s.x*T+T/2,s.y*T+T*0.82,T*0.14,T*0.04,'#3a2a1a');c.globalAlpha=1;drawStar(c,s.x*T+T/2,y,T*0.2,'#ffd23f');drawStar(c,s.x*T+T/2-T*0.03,y-T*0.03,T*0.08,'#fff6c2');});
+  // stars are drawn last (see drawStarsLayer) so they stay bright
   // entity list sorted by y
   const ents=[];
   M.npcs.forEach(n=>{
@@ -832,6 +831,20 @@ function drawGame(){
     }
   }
   if(M.TH.dark){const px=pp.x*T+T/2-camX,py=pp.y*T+T/2-camY;const gr=c.createRadialGradient(px,py,T*2.2,px,py,T*6);gr.addColorStop(0,'rgba(16,24,48,0)');gr.addColorStop(1,'rgba(16,24,48,0.62)');c.fillStyle=gr;c.fillRect(0,0,VW,VH);}
+  c.save();c.translate(-camX,-camY);drawStarsLayer(c,tt);c.restore();
+}
+function drawStarsLayer(c,tt){
+  M.stars.forEach(s=>{if(s.got)return;
+    const cx=s.x*T+T/2,bob=Math.sin(tt*3+s.ph)*T*0.07,cy=s.y*T+T/2-T*0.05+bob,pul=1+Math.sin(tt*4+s.ph)*0.12;
+    c.globalAlpha=0.3;ell(c,cx,s.y*T+T*0.86,T*0.2,T*0.05,'#3a2a1a');
+    const g=c.createRadialGradient(cx,cy,0,cx,cy,T*0.6*pul);g.addColorStop(0,'rgba(255,240,150,0.9)');g.addColorStop(1,'rgba(255,240,150,0)');c.globalAlpha=1;c.fillStyle=g;c.beginPath();c.arc(cx,cy,T*0.6*pul,0,Math.PI*2);c.fill();
+    c.save();c.translate(cx,cy);c.rotate(tt*0.8+s.ph);c.strokeStyle='rgba(255,255,255,0.85)';c.lineWidth=T*0.04;c.lineCap='round';
+    for(let k=0;k<8;k++){const a=k*Math.PI/4,r0=T*0.36,r1=T*(k%2?0.46:0.54)*pul;c.beginPath();c.moveTo(Math.cos(a)*r0,Math.sin(a)*r0);c.lineTo(Math.cos(a)*r1,Math.sin(a)*r1);c.stroke();}c.restore();
+    c.save();c.translate(cx,cy);c.rotate(Math.sin(tt*2+s.ph)*0.15);
+    drawStar(c,0,T*0.02,T*0.34*pul,'#b8790a');drawStar(c,0,0,T*0.3*pul,'#ffcc1f');drawStar(c,-T*0.04,-T*0.05,T*0.12,'#fff7c2');
+    ell(c,-T*0.07,-T*0.01,T*0.025,T*0.035,'#5a3b10');ell(c,T*0.07,-T*0.01,T*0.025,T*0.035,'#5a3b10');
+    c.restore();});
+  c.globalAlpha=1;
 }
 function drawStall(c,x,y,s,tt,met){
   // auntie behind counter
