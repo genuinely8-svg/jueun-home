@@ -55,7 +55,7 @@ button:focus-visible{outline:3px solid var(--sun);outline-offset:3px}
 #stick{position:absolute;width:120px;height:120px;border-radius:50%;background:rgba(251,244,228,.28);border:3px solid rgba(251,244,228,.6);pointer-events:none;transform:translate(-50%,-50%)}
 #stick i{position:absolute;left:50%;top:50%;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;background:rgba(251,244,228,.9);box-shadow:0 3px 0 rgba(74,58,44,.25)}
 #stickHint{position:absolute;left:calc(env(safe-area-inset-left,0px) + 30px);bottom:calc(env(safe-area-inset-bottom,0px) + 30px);width:110px;height:110px;border-radius:50%;border:3px dashed rgba(251,244,228,.55);display:grid;place-items:center;color:rgba(251,244,228,.9);font-size:13px;text-align:center;line-height:1.2}
-#toast{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 58px);transform:translateX(-50%);background:var(--paper);border-radius:16px;padding:8px 16px;font-family:var(--hand);font-weight:700;font-size:24px;box-shadow:0 3px 0 rgba(74,58,44,.25);max-width:60vw;text-align:center;transition:opacity .3s}
+#toast{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);transform:translateX(-50%);background:var(--paper);border-radius:16px;padding:8px 16px;font-family:var(--hand);font-weight:700;font-size:20px;box-shadow:0 3px 0 rgba(74,58,44,.25);max-width:46vw;text-align:center;transition:opacity .3s}
 #toast b{font-family:var(--display);font-weight:400;color:var(--berry);margin-right:6px}
 
 /* Cards */
@@ -657,7 +657,7 @@ function callHelper(auto){
   helper={who,t:0,life:14,path,x:P.x-1.1,y:P.y-0.2,say:''};
   SFX.help();
   const lines=who==='jiyun'?['주은아! 분홍 길을 따라가 봐','언니 왔어! 화살표 따라와']:['오빠 왔다! 분홍 길로 가자','오빠가 길 알려줄게!'];
-  helper.say=lines[Math.floor(Math.random()*2)];toast(who==='jiyun'?'지윤 언니':'정운 오빠',helper.say,7000);
+  helper.say=lines[Math.floor(Math.random()*2)];
   lastProgress=nowS;
 }
 /* ---------------- particles & toast ---------------- */
@@ -753,7 +753,7 @@ function drawGame(){
   const pp=playerPx();
   const mw=M.W*T,mh=M.H*T;
   let camX=pp.x*T+T/2-VW/2,camY=pp.y*T+T/2-VH/2;
-  camX=mw<=VW?(mw-VW)/2:clamp(camX,0,mw-VW);camY=mh<=VH?(mh-VH)/2:clamp(camY,-T*0.6,mh-VH+T*0.4);
+  camX=mw<=VW?(mw-VW)/2:clamp(camX,0,mw-VW);camY=mh<=VH?(mh-VH)/2:clamp(camY,-T*1.1,mh-VH+T*0.4);
   c.fillStyle=M.TH.bg;c.fillRect(0,0,VW,VH);
   c.drawImage(mapCv,0,0,mapCv.width,mapCv.height,-camX,-camY,mw,mh);
   c.save();c.translate(-camX,-camY);
@@ -798,8 +798,8 @@ function drawGame(){
   });
   pets.forEach(pt=>ents.push({y:pt.y+0.75,d:()=>{const fx=pt.x*T+T/2,fy=pt.y*T+T*0.88;pt.type==='dog'?drawDog(c,fx,fy,T*0.72,pt.ph,pt.flip,!pt.moving):drawCat(c,fx,fy,T*0.7,pt.ph,pt.flip,!pt.moving);}}));
   if(helper){const a=Math.min(1,helper.t*2,(helper.life-helper.t)*1.5);ents.push({y:helper.y+0.85,d:()=>{c.globalAlpha=a;const fx=helper.x*T+T/2,fy=helper.y*T+T*0.95;drawPerson(c,fx,fy,T*(helper.who==='jeongun'?1.55:1.42),Object.assign({},LOOK[helper.who],{wave:tt*8}),0);const nm=helper.who==='jiyun'?'지윤 언니':'정운 오빠';c.font=Math.round(T*0.34)+'px Jua, sans-serif';c.textAlign='center';c.textBaseline='middle';const nw=c.measureText(nm).width+T*0.4;rrect(c,fx-nw/2,fy+T*0.08,nw,T*0.48,T*0.24);c.fillStyle=helper.who==='jiyun'?'#3f5b8a':'#a9433f';c.fill();c.fillStyle='#fff';c.fillText(nm,fx,fy+T*0.33);
-      if(helper.say){c.font=Math.round(T*0.3)+'px Gaegu, Jua, sans-serif';const words=helper.say;const tw=Math.min(c.measureText(words).width,T*5.2);const bw=tw+T*0.5,bh=T*0.62,by=fy-T*(helper.who==='jeongun'?1.55:1.42)-T*0.85;
-        rrect(c,fx-bw/2,by,bw,bh,T*0.25);c.fillStyle='#fffaf0';c.fill();c.lineWidth=T*0.04;c.strokeStyle='#e0b089';c.stroke();c.beginPath();c.moveTo(fx-T*0.12,by+bh-1);c.lineTo(fx,by+bh+T*0.18);c.lineTo(fx+T*0.12,by+bh-1);c.closePath();c.fillStyle='#fffaf0';c.fill();
+      if(helper.say){c.font=Math.round(T*0.3)+'px Gaegu, Jua, sans-serif';const words=helper.say;const tw=Math.min(c.measureText(words).width,T*5.2);const bw=tw+T*0.5,bh=T*0.62;let by=fy-T*(helper.who==='jeongun'?1.55:1.42)-T*0.85;const below=by-camY<64;if(below)by=fy+T*0.7;
+        rrect(c,fx-bw/2,by,bw,bh,T*0.25);c.fillStyle='#fffaf0';c.fill();c.lineWidth=T*0.04;c.strokeStyle='#e0b089';c.stroke();c.beginPath();if(below){c.moveTo(fx-T*0.12,by+1);c.lineTo(fx,by-T*0.18);c.lineTo(fx+T*0.12,by+1);}else{c.moveTo(fx-T*0.12,by+bh-1);c.lineTo(fx,by+bh+T*0.18);c.lineTo(fx+T*0.12,by+bh-1);}c.closePath();c.fillStyle='#fffaf0';c.fill();
         c.fillStyle='#4a3a2c';c.font='bold '+Math.round(T*0.3)+'px Gaegu, Jua, sans-serif';c.fillText(words,fx,by+bh/2,T*5.2);}
       c.globalAlpha=1;}});}
   ents.push({y:pp.y+0.8,d:()=>{const fx=pp.x*T+T/2,fy=pp.y*T+T*0.92;const bob=P.t<1&&!P.jumping?Math.abs(Math.sin(P.walkPh))*T*0.04:Math.sin(tt*2.5)*T*0.012;
