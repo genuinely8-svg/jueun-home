@@ -40,7 +40,7 @@ button:focus-visible{outline:3px solid var(--sun);outline-offset:3px}
 .tools{display:flex;gap:8px;pointer-events:auto}
 .round{width:42px;height:42px;border-radius:50%;background:rgba(251,244,228,.92);color:var(--ink);font-size:18px;box-shadow:0 2px 0 rgba(74,58,44,.25);display:grid;place-items:center}
 .round.off{opacity:.55}
-#helpBtn{pointer-events:auto;position:absolute;top:calc(env(safe-area-inset-top,0px) + 60px);right:calc(env(safe-area-inset-right,0px) + 12px);background:#fff4d6;color:var(--ink);border-radius:18px;padding:8px 14px;font-size:15px;box-shadow:0 3px 0 rgba(74,58,44,.3);display:flex;align-items:center;gap:6px}
+#helpBtn{pointer-events:auto;position:absolute;top:calc(env(safe-area-inset-top,0px) + 10px);right:calc(env(safe-area-inset-right,0px) + 114px);height:42px;background:#fff4d6;color:var(--ink);border-radius:999px;padding:0 14px;font-size:15px;box-shadow:0 3px 0 rgba(74,58,44,.3);display:flex;align-items:center;gap:6px}
 #helpBtn .faces{display:flex}
 #helpBtn .faces i{width:20px;height:20px;border-radius:50%;display:block;border:2px solid #fff4d6;margin-left:-6px;background:#f6d5b8;position:relative;overflow:hidden}
 #helpBtn .faces i::before{content:"";position:absolute;left:-2px;right:-2px;top:-4px;height:11px;border-radius:50% 50% 30% 30%;background:#2e2420}
@@ -55,7 +55,7 @@ button:focus-visible{outline:3px solid var(--sun);outline-offset:3px}
 #stick{position:absolute;width:120px;height:120px;border-radius:50%;background:rgba(251,244,228,.28);border:3px solid rgba(251,244,228,.6);pointer-events:none;transform:translate(-50%,-50%)}
 #stick i{position:absolute;left:50%;top:50%;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;background:rgba(251,244,228,.9);box-shadow:0 3px 0 rgba(74,58,44,.25)}
 #stickHint{position:absolute;left:calc(env(safe-area-inset-left,0px) + 30px);bottom:calc(env(safe-area-inset-bottom,0px) + 30px);width:110px;height:110px;border-radius:50%;border:3px dashed rgba(251,244,228,.55);display:grid;place-items:center;color:rgba(251,244,228,.9);font-size:13px;text-align:center;line-height:1.2}
-#toast{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 58px);transform:translateX(-50%);background:var(--paper);border-radius:16px;padding:8px 16px;font-family:var(--hand);font-weight:700;font-size:20px;box-shadow:0 3px 0 rgba(74,58,44,.25);max-width:70vw;text-align:center;transition:opacity .3s}
+#toast{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 58px);transform:translateX(-50%);background:var(--paper);border-radius:16px;padding:8px 16px;font-family:var(--hand);font-weight:700;font-size:24px;box-shadow:0 3px 0 rgba(74,58,44,.25);max-width:60vw;text-align:center;transition:opacity .3s}
 #toast b{font-family:var(--display);font-weight:400;color:var(--berry);margin-right:6px}
 
 /* Cards */
@@ -654,15 +654,15 @@ function callHelper(auto){
   if(state!=='play'||helper)return;
   const who=helperTurn++%2===0?'jiyun':'jeongun';
   const b=bfs(M.g,P.x,P.y,true);const path=pathTo(b.prev,P.x,P.y,M.goal.x,M.goal.y);
-  helper={who,t:0,life:7,path,x:P.x-1.1,y:P.y-0.2};
+  helper={who,t:0,life:14,path,x:P.x-1.1,y:P.y-0.2,say:''};
   SFX.help();
-  const lines=who==='jiyun'?['주은아, 언니가 도와줄게! 반짝이는 길로 가봐.','언니 여기 있어! 별빛 따라가면 돼.']:['주은아, 오빠 왔다! 반짝반짝 길로 따라와.','길 잃었어? 오빠가 알려줄게!'];
-  toast(who==='jiyun'?'지윤 언니':'정운 오빠',lines[Math.floor(Math.random()*2)]);
+  const lines=who==='jiyun'?['주은아! 분홍 길을 따라가 봐','언니 왔어! 화살표 따라와']:['오빠 왔다! 분홍 길로 가자','오빠가 길 알려줄게!'];
+  helper.say=lines[Math.floor(Math.random()*2)];toast(who==='jiyun'?'지윤 언니':'정운 오빠',helper.say,7000);
   lastProgress=nowS;
 }
 /* ---------------- particles & toast ---------------- */
 function burst(x,y,n,col,sp){for(let k=0;k<n;k++){const a=Math.random()*Math.PI*2,v=(0.5+Math.random())*sp;parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-0.6,life:0.7+Math.random()*0.4,col});}}
-function toast(who,text){const el=$('toast');el.innerHTML='';if(who){const b=document.createElement('b');b.textContent=who;el.appendChild(b);}el.appendChild(document.createTextNode(text));el.style.opacity=1;clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.style.opacity=0,3200);}
+function toast(who,text,ms){const el=$('toast');el.innerHTML='';if(who){const b=document.createElement('b');b.textContent=who;el.appendChild(b);}el.appendChild(document.createTextNode(text));el.style.opacity=1;clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.style.opacity=0,ms||3200);}
 
 /* ---------------- input ---------------- */
 const keys={};let stick=null;
@@ -759,7 +759,16 @@ function drawGame(){
   c.save();c.translate(-camX,-camY);
   const tt=nowS;
   // sibling sparkle path
-  if(helper){const a=Math.min(1,helper.t*2,(helper.life-helper.t)*1.5);helper.path.slice(1,40).forEach(([x,y],k)=>{const tw=0.5+0.5*Math.sin(tt*6-k*0.6);c.globalAlpha=a*(0.45+tw*0.55);drawStar(c,x*T+T/2,y*T+T/2,T*(0.1+tw*0.07),'#fff3a6');});c.globalAlpha=1;}
+  if(helper){const a=Math.min(1,helper.t*2,(helper.life-helper.t)*1.5);
+    const b=bfs(M.g,P.x,P.y,true);const pts=pathTo(b.prev,P.x,P.y,M.goal.x,M.goal.y).map(([x,y])=>[x*T+T/2,y*T+T/2]);
+    if(pts.length>1){c.globalAlpha=a;c.lineCap='round';c.lineJoin='round';
+      c.beginPath();pts.forEach(([x,y],k)=>k?c.lineTo(x,y):c.moveTo(x,y));
+      c.strokeStyle='rgba(255,255,255,.95)';c.lineWidth=T*0.36;c.stroke();
+      c.strokeStyle='#ff6f91';c.lineWidth=T*0.22;c.stroke();
+      c.setLineDash([T*0.18,T*0.32]);c.lineDashOffset=-tt*T*1.6;c.strokeStyle='#fff3a6';c.lineWidth=T*0.1;c.stroke();c.setLineDash([]);
+      for(let k=1;k<pts.length;k+=2){const [x0,y0]=pts[k-1],[x1,y1]=pts[k];const ang=Math.atan2(y1-y0,x1-x0);const bob=Math.sin(tt*6-k*0.5)*T*0.06;
+        c.save();c.translate(x1+Math.cos(ang)*bob,y1+Math.sin(ang)*bob);c.rotate(ang);c.beginPath();c.moveTo(T*0.26,0);c.lineTo(-T*0.12,-T*0.22);c.lineTo(-T*0.12,T*0.22);c.closePath();c.fillStyle='#ffffff';c.fill();c.lineWidth=T*0.05;c.strokeStyle='#e0456f';c.stroke();c.restore();}
+      c.globalAlpha=1;}}
   // start marker
   if(M.i===0){const sx=M.start.x*T+T/2,sy=M.start.y*T+T;rrect(c,sx-T*0.5,sy-T*1.25,T,T*0.3,T*0.08);c.fillStyle='#fbf4e4';c.fill();c.fillStyle='#4a3a2c';c.font=Math.round(T*0.22)+'px Jua, sans-serif';c.textAlign='center';c.textBaseline='middle';c.fillText('학교',sx,sy-T*1.1);}
   // goal
@@ -788,7 +797,11 @@ function drawGame(){
     else if(!n.met)ents.push({y:n.wy+0.8,d:()=>{const fx=n.wx*T+T/2,fy=n.wy*T+T*0.85;n.type==='dog'?drawDog(c,fx,fy,T*0.95,tt,n.tx<n.wx,true):drawCat(c,fx,fy,T*0.95,tt*0.6,n.tx<n.wx,true);const by=fy-T*1.05+Math.sin(tt*4)*T*0.04;rrect(c,fx-T*0.32,by-T*0.18,T*0.64,T*0.3,T*0.12);c.fillStyle='#fbf4e4';c.fill();c.fillStyle='#4a3a2c';c.font=Math.round(T*0.18)+'px Jua, sans-serif';c.textAlign='center';c.textBaseline='middle';c.fillText(n.type==='dog'?'멍멍!':'야옹~',fx,by-T*0.03);}});
   });
   pets.forEach(pt=>ents.push({y:pt.y+0.75,d:()=>{const fx=pt.x*T+T/2,fy=pt.y*T+T*0.88;pt.type==='dog'?drawDog(c,fx,fy,T*0.72,pt.ph,pt.flip,!pt.moving):drawCat(c,fx,fy,T*0.7,pt.ph,pt.flip,!pt.moving);}}));
-  if(helper){const a=Math.min(1,helper.t*2,(helper.life-helper.t)*1.5);ents.push({y:helper.y+0.85,d:()=>{c.globalAlpha=a;const fx=helper.x*T+T/2,fy=helper.y*T+T*0.95;drawPerson(c,fx,fy,T*(helper.who==='jeongun'?1.55:1.42),Object.assign({},LOOK[helper.who],{wave:tt*8}),0);c.fillStyle='#4a3a2c';c.font=Math.round(T*0.2)+'px Jua, sans-serif';c.textAlign='center';c.fillText(helper.who==='jiyun'?'지윤 언니':'정운 오빠',fx,fy+T*0.22);c.globalAlpha=1;}});}
+  if(helper){const a=Math.min(1,helper.t*2,(helper.life-helper.t)*1.5);ents.push({y:helper.y+0.85,d:()=>{c.globalAlpha=a;const fx=helper.x*T+T/2,fy=helper.y*T+T*0.95;drawPerson(c,fx,fy,T*(helper.who==='jeongun'?1.55:1.42),Object.assign({},LOOK[helper.who],{wave:tt*8}),0);const nm=helper.who==='jiyun'?'지윤 언니':'정운 오빠';c.font=Math.round(T*0.34)+'px Jua, sans-serif';c.textAlign='center';c.textBaseline='middle';const nw=c.measureText(nm).width+T*0.4;rrect(c,fx-nw/2,fy+T*0.08,nw,T*0.48,T*0.24);c.fillStyle=helper.who==='jiyun'?'#3f5b8a':'#a9433f';c.fill();c.fillStyle='#fff';c.fillText(nm,fx,fy+T*0.33);
+      if(helper.say){c.font=Math.round(T*0.3)+'px Gaegu, Jua, sans-serif';const words=helper.say;const tw=Math.min(c.measureText(words).width,T*5.2);const bw=tw+T*0.5,bh=T*0.62,by=fy-T*(helper.who==='jeongun'?1.55:1.42)-T*0.85;
+        rrect(c,fx-bw/2,by,bw,bh,T*0.25);c.fillStyle='#fffaf0';c.fill();c.lineWidth=T*0.04;c.strokeStyle='#e0b089';c.stroke();c.beginPath();c.moveTo(fx-T*0.12,by+bh-1);c.lineTo(fx,by+bh+T*0.18);c.lineTo(fx+T*0.12,by+bh-1);c.closePath();c.fillStyle='#fffaf0';c.fill();
+        c.fillStyle='#4a3a2c';c.font='bold '+Math.round(T*0.3)+'px Gaegu, Jua, sans-serif';c.fillText(words,fx,by+bh/2,T*5.2);}
+      c.globalAlpha=1;}});}
   ents.push({y:pp.y+0.8,d:()=>{const fx=pp.x*T+T/2,fy=pp.y*T+T*0.92;const bob=P.t<1&&!P.jumping?Math.abs(Math.sin(P.walkPh))*T*0.04:Math.sin(tt*2.5)*T*0.012;
     if(pp.hop>0){c.globalAlpha=0.25;ell(c,fx,fy,T*0.18*(1-pp.hop*0.4),T*0.05,'#2a1d17');c.globalAlpha=1;}
     c.save();c.translate(fx,fy-pp.hop*T-bob);if(P.face<0)c.scale(-1,1);drawPerson(c,0,0,T*1.05,LOOK.jueun,P.t<1&&!P.jumping?P.walkPh:0);c.restore();}});
