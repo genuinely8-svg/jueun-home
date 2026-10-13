@@ -32,7 +32,7 @@ button:focus-visible{outline:3px solid var(--sun);outline-offset:3px}
 
 /* HUD */
 #hud{position:fixed;inset:0;pointer-events:none}
-#hud[hidden]{display:none!important}
+[hidden]{display:none!important}
 .topbar{position:absolute;top:calc(env(safe-area-inset-top,0px) + 10px);left:calc(env(safe-area-inset-left,0px) + 12px);right:calc(env(safe-area-inset-right,0px) + 12px);display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
 .chip{pointer-events:auto;background:rgba(251,244,228,.92);border-radius:999px;padding:6px 14px;font-size:15px;box-shadow:0 2px 0 rgba(74,58,44,.25);display:flex;align-items:center;gap:8px;white-space:nowrap}
 .chip .stage-name{max-width:42vw;overflow:hidden;text-overflow:ellipsis}
